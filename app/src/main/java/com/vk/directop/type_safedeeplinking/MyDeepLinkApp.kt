@@ -5,9 +5,12 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.core.content.getSystemService
+import androidx.core.net.toUri
 
 class MyDeepLinkApp : Application() {
 
@@ -17,6 +20,7 @@ class MyDeepLinkApp : Application() {
         showNotification()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             CHANNEL_ID,
@@ -28,7 +32,9 @@ class MyDeepLinkApp : Application() {
     }
 
     private fun showNotification() {
-        val activityIntent = Intent(this, MainActivity::class.java)
+        val activityIntent = Intent(this, MainActivity::class.java).apply {
+            data = "https://$DEEPLINK_DOMAIN/8457".toUri()
+        }
         val pendingIntent = TaskStackBuilder.create(this).run {
             addNextIntentWithParentStack(activityIntent)
             getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
