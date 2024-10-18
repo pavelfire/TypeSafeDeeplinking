@@ -11,7 +11,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.vk.directop.type_safedeeplinking.ui.theme.TypesafeDeepLinkingTheme
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object HomeScreen
+
+@Serializable
+data class DeepLinkScreen(val id: Int)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,28 +30,22 @@ class MainActivity : ComponentActivity() {
         setContent {
             TypesafeDeepLinkingTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = HomeScreen,
+                        modifier = Modifier
+                            .padding(innerPadding)
+                    ) {
+                        composable<HomeScreen> {
+                            HomeScreen()
+                        }
+                        composable<DeepLinkScreen> {
+
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TypesafeDeepLinkingTheme {
-        Greeting("Android")
     }
 }
